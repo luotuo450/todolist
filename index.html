@@ -2,140 +2,124 @@
 <html lang="zh-CN">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo List</title>
-  <style>
-    .completed {
-      text-decoration: line-through;
-      opacity: 0.5;
-    }
-
-    .del {
-      color: rgb(196, 32, 32);
-      font-size: 13px;
-    }
-
-    .item {
-      align-items: center;
-      justify-content: space-between;
-      display: flex;
-      margin: 8px auto;
-      padding: 16px;
-      box-sizing: border-box;
-      border-radius: 20px;
-      box-shadow: 0px 8px 20px rgba(149, 157, 165, 0.2);
-      width: 90%;
-    }
-
-    body {
-      background: linear-gradient(to right, rgba(195, 0, 255, 0.429), rgba(0, 0, 255, 0.823));
-    }
-
-    .todo {
-      width: 98%;
-      height: 500px;
-      background-color: white;
-      border-radius: 20px;
-      margin-top: 20px;
-      margin-left: 1%;
-      padding-top: 20px;
-      box-sizing: border-box;
-    }
-
-    .title {
-      text-align: center;
-      font-size: 30px;
-      font-weight: 700;
-    }
-
-    .todo-form {
-      margin-bottom: 20px;
-      display: flex;
-      margin-top: 20px;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .todo-input {
-      border: 2px solid #dfe1e5;
-      outline: none;
-      width: 60%;
-      height: 50px;
-      border-radius: 20px 0 0 20px;
-      padding-left: 15px;
-    }
-
-    .addbutton {
-      width: 100px;
-      height: 55px;
-      border-radius: 0 20px 20px 0;
-      background: linear-gradient(to right, rgba(195, 0, 255, 0.429), rgba(0, 0, 255, 0.823));
-      color: #ffff;
-      font-size: 15px;
-      text-align: center;
-      line-height: 55px;
-      cursor: pointer;
-      user-select: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI计算器</title>
+    <script src="https://cdn.staticfile.net/jquery/1.10.2/jquery.min.js">
+    </script>
 </head>
 
 <body>
-  <div class="todo">
-    <div class="title">Todo List</div>
-    <div class="todo-form">
-      <input type="text" placeholder="请输入待办事项" class="todo-input">
-      <div class="addbutton">添加待办</div>
+    <div id="title">
+        <h1>BMI计算器</h1>
     </div>
-    <div id="todo-list">
-      <!-- 待办事项列表将动态生成在这里 -->
+    <div id="all_input">
+        <input type="text" id="height_input" class="input" placeholder="请输入身高(m)">
+        <input type="text" id="weight_input" class="input" placeholder="请输入体重(kg)">
     </div>
-  </div>
-  <script>
-    // 获取DOM元素
-    const todoInput = document.querySelector('.todo-input');
-    const addButton = document.querySelector('.addbutton');
-    const todoList = document.getElementById('todo-list');
+    <div id="caculate_button" onclick="caculate()">计算</div>
+    <div id="result"></div>
+    <p style="color:white;text-align: center;">bmi参考值</p>
+    <ul class="bmi_list">
+        <li>BMI <= 18.5 偏瘦</li>
+        <li>BMI 18.5-23.9 正常</li>
+        <li>BMI 24.0-27.9 过重</li>
+        <li>BMI >=28.0 肥胖</li>
+    </ul>
+    <script>
+        function showResult(bmi, bmi_situation) {
+            let result = document.createElement("div");
+            result.innerHTML = "<div id='bmi_result'>您的BMI为：" + bmi.toFixed(2) + "<br>您的体重情况为：" + bmi_situation + "</div>";
+            document.querySelector("#result").prepend(result); // 使用 prepend
+            $("#bmi_result").hide();
+            $("#bmi_result").slideDown(500);
+        }
 
-    // 添加待办事项
-    function addTodo() {
-      const todoText = todoInput.value.trim();
-      if (todoText !== '') {
-        const todoItem = document.createElement('div');
-        todoItem.className = 'item';
-        todoItem.innerHTML = `
-                    <div>
-                        <input type="checkbox">
-                        <span class="name">${todoText}</span>
-                    </div>
-                    <div class="del">删除</div>
-                `;
-        todoList.appendChild(todoItem);
-        todoInput.value = '';
-        // 添加事件监听器
-        const checkbox = todoItem.querySelector('input[type="checkbox"]');
-        const delButton = todoItem.querySelector('.del');
-        checkbox.addEventListener('change', toggleComplete);
-        delButton.addEventListener('click', deleteTodo);
-      }
-    }
+        function caculate() {
+            let height_input = document.getElementById('height_input').value;
+            let weight_input = document.getElementById('weight_input').value;
+            let bmi = weight_input / (height_input * height_input);
 
-    // 标记待办事项为已完成
-    function toggleComplete(event) {
-      const todoItem = event.target.parentElement.parentElement;
-      todoItem.classList.toggle('completed');
-    }
+            if (isNaN(bmi) || height_input <= 0 || weight_input <= 0) {
+                alert("您的输入有误");
+            } else if (bmi <= 18.5) {
+                showResult(bmi, "偏瘦");
+            } else if (bmi <= 23.9) {
+                showResult(bmi, "正常");
+            } else if (bmi <= 27.9) {
+                showResult(bmi, "过重");
+            } else {
+                showResult(bmi, "肥胖");
+            }
+            document.getElementById('height_input').value = "";
+            document.getElementById('weight_input').value = "";
 
-    // 删除待办事项
-    function deleteTodo(event) {
-      const todoItem = event.target.parentElement;
-      todoList.removeChild(todoItem);
-    }
+        }
+    </script>
+    <style>
+        .bmi_list {
+            list-style: none;
+            color: #ddd;
+            /* 修改为白色 */
+            text-align: center;
+            margin-right: 40px;
+        }
 
-    // 添加事件监听器
-    addButton.addEventListener('click', addTodo);
-  </script>
+        #bmi_result {
+            text-align: center;
+            color: #fafabf;
+            font-size: 20px;
+        }
+
+        body {
+            background: linear-gradient(to right, rgba(195, 0, 255, 0.429), rgba(0, 0, 255, 0.823));
+        }
+
+        #title {
+            text-align: center;
+            color: #b0e0e6;
+            font-size: 20px;
+            margin-top: 60px;
+        }
+
+        #all_input {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .input {
+            border: 2px solid #dfe1e5;
+            outline: none;
+            width: 50%;
+            height: 40px;
+            border-radius: 15px;
+            padding-left: 15px;
+            margin: 0 auto;
+        }
+
+        #weight_input {
+            margin-top: 20px;
+        }
+
+        #caculate_button {
+            background: linear-gradient(to right, rgba(225, 255, 0, 0.392), rgba(0, 255, 60, 0.303));
+            ;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 55px;
+            height: 35px;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            line-height: 34px;
+            user-select: none;
+            margin: 20px auto;
+        }
+    </style>
 </body>
 
 </html>
