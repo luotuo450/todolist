@@ -4,122 +4,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI计算器</title>
-    <script src="https://cdn.staticfile.net/jquery/1.10.2/jquery.min.js">
-    </script>
-</head>
-
-<body>
-    <div id="title">
-        <h1>BMI计算器</h1>
-    </div>
-    <div id="all_input">
-        <input type="text" id="height_input" class="input" placeholder="请输入身高(m)">
-        <input type="text" id="weight_input" class="input" placeholder="请输入体重(kg)">
-    </div>
-    <div id="caculate_button" onclick="caculate()">计算</div>
-    <div id="result"></div>
-    <p style="color:white;text-align: center;">bmi参考值</p>
-    <ul class="bmi_list">
-        <li>BMI <= 18.5 偏瘦</li>
-        <li>BMI 18.5-23.9 正常</li>
-        <li>BMI 24.0-27.9 过重</li>
-        <li>BMI >=28.0 肥胖</li>
-    </ul>
-    <script>
-        function showResult(bmi, bmi_situation) {
-            let result = document.createElement("div");
-            result.innerHTML = "<div id='bmi_result'>您的BMI为：" + bmi.toFixed(2) + "<br>您的体重情况为：" + bmi_situation + "</div>";
-            document.querySelector("#result").prepend(result); // 使用 prepend
-            $("#bmi_result").hide();
-            $("#bmi_result").slideDown(500);
-        }
-
-        function caculate() {
-            let height_input = document.getElementById('height_input').value;
-            let weight_input = document.getElementById('weight_input').value;
-            let bmi = weight_input / (height_input * height_input);
-
-            if (isNaN(bmi) || height_input <= 0 || weight_input <= 0) {
-                alert("您的输入有误");
-            } else if (bmi <= 18.5) {
-                showResult(bmi, "偏瘦");
-            } else if (bmi <= 23.9) {
-                showResult(bmi, "正常");
-            } else if (bmi <= 27.9) {
-                showResult(bmi, "过重");
-            } else {
-                showResult(bmi, "肥胖");
-            }
-            document.getElementById('height_input').value = "";
-            document.getElementById('weight_input').value = "";
-
-        }
-    </script>
+    <title>Todo List</title>
     <style>
-        .bmi_list {
-            list-style: none;
-            color: #ddd;
-            /* 修改为白色 */
-            text-align: center;
-            margin-right: 40px;
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.5;
         }
 
-        #bmi_result {
-            text-align: center;
-            color: #fafabf;
-            font-size: 20px;
+        .del {
+            color: rgb(196, 32, 32);
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .item {
+            align-items: center;
+            justify-content: space-between;
+            display: flex;
+            margin: 8px auto;
+            padding: 16px;
+            box-sizing: border-box;
+            border-radius: 20px;
+            box-shadow: 0px 8px 20px rgba(149, 157, 165, 0.2);
+            width: 90%;
         }
 
         body {
             background: linear-gradient(to right, rgba(195, 0, 255, 0.429), rgba(0, 0, 255, 0.823));
+            height: 100%;
         }
 
-        #title {
-            text-align: center;
-            color: #b0e0e6;
-            font-size: 20px;
-            margin-top: 60px;
-        }
-
-        #all_input {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .todo-background {
+            width: 98%;
+            height: 100%;
+            background-color: white;
+            border-radius: 20px;
             margin-top: 20px;
+            margin-left: 1%;
+            padding-top: 20px;
+            box-sizing: border-box;
+            padding-bottom: 20px;
         }
 
-        .input {
+        .title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .todo-form {
+            margin-bottom: 20px;
+            display: flex;
+            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .todo-input {
             border: 2px solid #dfe1e5;
             outline: none;
-            width: 50%;
-            height: 40px;
-            border-radius: 15px;
+            width: 60%;
+            height: 50px;
+            border-radius: 20px 0 0 20px;
             padding-left: 15px;
-            margin: 0 auto;
         }
 
-        #weight_input {
-            margin-top: 20px;
-        }
-
-        #caculate_button {
-            background: linear-gradient(to right, rgba(225, 255, 0, 0.392), rgba(0, 255, 60, 0.303));
-            ;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            width: 55px;
-            height: 35px;
-            margin-top: 20px;
+        .addbutton {
+            width: 100px;
+            height: 55px;
+            border-radius: 0 20px 20px 0;
+            background: linear-gradient(to right, rgba(195, 0, 255, 0.429), rgba(0, 0, 255, 0.823));
+            color: #ffff;
+            font-size: 15px;
+            text-align: center;
+            line-height: 55px;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            line-height: 34px;
             user-select: none;
-            margin: 20px auto;
         }
     </style>
+</head>
+
+<body>
+    <div class="todo-background">
+        <div class="title">Todo List</div>
+        <div class="todo-form">
+            <input type="text" placeholder="请输入待办事项" class="todo-input" id="todo-input">
+            <div class="addbutton" onclick="addTodo()">添加待办</div>
+        </div>
+        <div id="todo-list">
+            <!-- 待办事项列表将动态生成在这里 -->
+        </div>
+    </div>
+    <script>
+        let item_id = 0; //定义一个变量，用来给每个用户的待办事项列表元素添加一个唯一的id，以便于区分
+        let del_button_id = 0; //定义一个变量，用来给每个用户的删除按钮元素添加一个唯一的id，以便于区分
+        //定义添加任务函数
+        function addTodo() {
+            item_id = item_id + 1; //每次添加任务时，item_id自增1
+            del_button_id = del_button_id + 1; //每次添加任务时，del_button_id自增1
+            let user_input = document.querySelector(".todo-input").value; //获取输入框的值,获取表单的值时需要在后面加上.value
+            if (user_input !== "") { //如果输入框为空，则不添加任务
+                let new_task_div = document.createElement("div"); //创建新的div元素
+                new_task_div.className = "item item" + item_id; //给这个新的div元素添加类名为item，这样创建的时候就可以调用item样式
+                new_task_div.innerHTML = "<div>" + user_input + "</div><div class='del' id=del" + del_button_id + " onclick='delTodo(event)'>删除</div>"; //给这个新的div元素添加innerHTML
+                document.querySelector("#todo-list").appendChild(new_task_div); //把以上定义的新的元素添加到id为todo-list的元素中
+                document.getElementById("todo-input").value = "";
+            } else {
+                alert("请输入待办事项"); //如果输入框为空，则弹出提示框
+            }
+        }
+        //定义删除任务函数
+        function delTodo(event) {
+            console.log("delTodo function called"); // 添加这行代码来检查函数是否被调用
+            let del_id = event.target.id; //获取删除按钮的id
+            console.log(del_id);
+        }
+
+    </script>
 </body>
 
 </html>
